@@ -5,7 +5,7 @@
  * Plugin Name: LGPD Consent Manager
  * Plugin URI: https://github.com/manuseiro/lgpd-consent-manager
  * Description: O LGPD Consent Manager permite gerenciar os consentimentos de cookies e dados pessoais dos visitantes conforme as diretrizes da Lei Geral de Proteção de Dados (LGPD). Exibe uma mensagem solicitando o aceite ou recusa e armazena essas informações no banco de dados, além de fornecer uma interface administrativa para auditoria.
- * Version: 1.3.1
+ * Version: 1.4.0
  * Author: Manuseiro
  * Author URI:  https://github.com/manuseiro
  * Text Domain: lgpd-consent-manager
@@ -17,8 +17,8 @@
 // Função para registrar o consentimento no banco de dados
 function lgpd_save_consent($action) {
     global $wpdb;
-    $user_ip = $_SERVER['REMOTE_ADDR'];
-    $user_agent = $_SERVER['HTTP_USER_AGENT']; // Captura o User Agent do navegador
+    $user_ip = sanitize_text_field($_SERVER['REMOTE_ADDR']);
+    $user_agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
     $table_name = $wpdb->prefix . 'lgpd_consent';
 
     // Verifica se o usuário já deu um consentimento
@@ -73,14 +73,14 @@ register_activation_hook(__FILE__, 'lgpd_create_table');
 // Exibe a mensagem de aceite no frontend
 function lgpd_consent_banner() {
     // Obtém a mensagem e o link da política de privacidade das opções do WordPress
-    $message = get_option('lgpd_consent_message', 'Este site usa cookies para melhorar sua experiência. Ao continuar navegando, você aceita os termos de privacidade.');
+    $message = get_option('lgpd_consent_message', __('This website uses cookies to improve your experience. By continuing to browse, you accept the terms of privacy.', 'lgpd-consent-manager'));
     $privacy_link = get_option('lgpd_privacy_link', '/politica-de-privacidade');
 
     if (!isset($_COOKIE['lgpd_consent'])) {
         echo '<div id="lgpd-consent-banner" style="position: fixed; bottom: 0; background: rgba(0,0,0,0.9); color: #fff; width: 100%; padding: 20px; text-align: center; z-index: 1000;">
-                <p>' . esc_html($message) . ' <a href="' . esc_url($privacy_link) . '" class="btn btn-primary">Leia mais</a></p>
-                <button style="background-color: green; color: white; padding: 10px;" onclick="lgpdConsentAction(\'accepted\')">Aceitar</button>
-                <button style="background-color: red; color: white; padding: 10px;" onclick="lgpdConsentAction(\'rejected\')">Recusar</button>
+                <p>' . esc_html($message) . ' <a href="' . esc_url($privacy_link) . '" class="btn btn-primary">' . __('Read more', 'lgpd-consent-manager') . '</a></p>
+                <button style="background-color: green; color: white; padding: 10px;" onclick="lgpdConsentAction(\'accepted\')">' . __('Accept', 'lgpd-consent-manager') . '</button>
+                <button style="background-color: red; color: white; padding: 10px;" onclick="lgpdConsentAction(\'rejected\')">' . __('Refuse', 'lgpd-consent-manager') . '</button>
               </div>';
     }
 }
@@ -122,8 +122,8 @@ add_action('wp_ajax_nopriv_lgpd_save_consent', 'lgpd_save_consent_ajax');
 // Função para criar a página de administração no WordPress
 function lgpd_create_admin_page() {
     add_menu_page(
-        'Gerenciamento de LGPD',
-        'LGPD Consentimentos',
+        __('Accepts LGPD', 'lgpd-consent-manager'),
+        __('Accepts LGPD', 'lgpd-consent-manager'),
         'manage_options',
         'lgpd-consent-manager',
         'lgpd_display_admin_page',
@@ -134,8 +134,8 @@ function lgpd_create_admin_page() {
     // Submenu para configurações
     add_submenu_page(
         'lgpd-consent-manager',
-        'Configurações de Consentimento',
-        'Configurações',
+        __('LGPD Settings', 'lgpd-consent-manager'),
+        __('Settings', 'lgpd-consent-manager'),
         'manage_options',
         'lgpd-consent-settings',
         'lgpd_display_settings_page'
@@ -143,7 +143,7 @@ function lgpd_create_admin_page() {
 }
 add_action('admin_menu', 'lgpd_create_admin_page');
 
-// Função para exibir a lista de consentimentos na página administrativa com filtro e paginação
+// Função para exibir a lista de consentimentos na página administrativa com filtro, ordenação e paginação
 function lgpd_display_admin_page() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'lgpd_consent';
@@ -151,10 +151,16 @@ function lgpd_display_admin_page() {
     // Filtro por ação (aceitar ou recusar)
     $action_filter = isset($_GET['action_filter']) ? sanitize_text_field($_GET['action_filter']) : '';
 
+    // Ordenação por coluna
+    $order_by = isset($_GET['orderby']) ? sanitize_sql_orderby($_GET['orderby']) : 'date';
+    $order = isset($_GET['order']) && in_array($_GET['order'], ['asc', 'desc']) ? $_GET['order'] : 'desc';
+
+    // Base da query SQL
     $query = "SELECT * FROM $table_name";
     if ($action_filter) {
         $query .= $wpdb->prepare(" WHERE action = %s", $action_filter);
     }
+    $query .= " ORDER BY $order_by $order";
 
     // Paginação
     $items_per_page = 10;
@@ -165,43 +171,48 @@ function lgpd_display_admin_page() {
     $results = $wpdb->get_results($query . " LIMIT $items_per_page OFFSET $offset");
 
     // Exibe os consentimentos
-    echo '<div class="wrap"><h1>Lista de Consentimentos LGPD</h1>';
+    echo '<div class="wrap">
+    <h1>' . __('LGPD Consent List', 'lgpd-consent-manager') . '</h1>';
 
     // Filtro por tipo de ação
     echo '<form method="get"><input type="hidden" name="page" value="lgpd-consent-manager"/>';
     echo '<select name="action_filter" onchange="this.form.submit()">';
-    echo '<option value="">Todos</option>';
-    echo '<option value="accepted" ' . selected($action_filter, 'accepted', false) . '>Aceitos</option>';
-    echo '<option value="rejected" ' . selected($action_filter, 'rejected', false) . '>Recusados</option>';
+    echo '<option value="">' . __('All', 'lgpd-consent-manager') . '</option>';
+    echo '<option value="accepted" ' . selected($action_filter, 'accepted', false) . '>' . _X('Accepted', 'lgpd-consent-manager') . '</option>';
+    echo '<option value="rejected" ' . selected($action_filter, 'rejected', false) . '>' . __('Refused', 'lgpd-consent-manager') . '</option>';
     echo '</select></form>';
 
+    // Tabela de consentimentos com links para ordenação
     echo '<table class="wp-list-table widefat fixed striped">';
-    echo '<thead><tr><th>ID</th><th>IP do Usuário</th><th>Ação</th><th>Data</th><th>User Agent</th></tr></thead>';
+    echo '<thead><tr>';
+    echo '<th>' . __('ID', 'lgpd-consent-manager') . '</th>';
+    echo '<th><a href="' . add_query_arg(['orderby' => 'ip_address', 'order' => ($order == 'asc' ? 'desc' : 'asc')]) . '">' . __('User IP', 'lgpd-consent-manager') . '</a></th>';
+    echo '<th>' . __('Action', 'lgpd-consent-manager') . '</th>';
+    echo '<th><a href="' . add_query_arg(['orderby' => 'date', 'order' => ($order == 'asc' ? 'desc' : 'asc')]) . '">' . __('Date', 'lgpd-consent-manager') . '</a></th>';
+    echo '<th>' . __('User Agent', 'lgpd-consent-manager') . '</th>';
+    echo '</tr></thead>';
+    
+    // Corpo da tabela
     echo '<tbody>';
-
-    if (!empty($results)) {
-        foreach ($results as $row) {
-            echo '<tr>';
-            echo '<td>' . esc_html($row->id) . '</td>';
-            echo '<td>' . esc_html($row->ip_address) . '</td>';
-            echo '<td>' . esc_html($row->action) . '</td>';
-            echo '<td>' . esc_html($row->date) . '</td>';
-            echo '<td>' . esc_html($row->user_agent) . '</td>';
-            echo '</tr>';
-        }
-    } else {
-        echo '<tr><td colspan="5">Nenhum consentimento encontrado.</td></tr>';
+    foreach ($results as $row) {
+        echo '<tr>';
+        echo '<td>' . esc_html($row->id) . '</td>';
+        echo '<td>' . esc_html($row->ip_address) . '</td>';
+        echo '<td>' . esc_html($row->action) . '</td>';
+        echo '<td>' . esc_html($row->date) . '</td>';
+        echo '<td>' . esc_html($row->user_agent) . '</td>';
+        echo '</tr>';
     }
-
     echo '</tbody></table>';
 
     // Paginação
     $total_pages = ceil($total_items / $items_per_page);
     echo '<div class="pagination">';
     for ($i = 1; $i <= $total_pages; $i++) {
-        echo '<a href="?page=lgpd-consent-manager&paged=' . $i . '&action_filter=' . esc_attr($action_filter) . '">' . $i . '</a> ';
+        echo '<a href="' . add_query_arg('paged', $i, $_SERVER['REQUEST_URI']) . '">' . $i . '</a> ';
     }
     echo '</div>';
+
     echo '</div>';
 }
 
@@ -209,7 +220,7 @@ function lgpd_display_admin_page() {
 function lgpd_display_settings_page() {
     // Verifica se o usuário tem permissão para gerenciar opções
     if (!current_user_can('manage_options')) {
-        wp_die(__('Você não tem permissão para acessar esta página.'));
+        wp_die(__('You do not have permission to access this page.'));
     }
 
     // Salva as configurações se o formulário for enviado
@@ -218,26 +229,26 @@ function lgpd_display_settings_page() {
         $privacy_page = intval($_POST['lgpd_privacy_page']);
         update_option('lgpd_consent_message', $message);
         update_option('lgpd_privacy_page', $privacy_page); // Armazena o ID da página
-        echo '<div class="updated"><p>Configurações atualizadas com sucesso!</p></div>';
+        echo '<div class="updated"><p>Settings updated successfully!</p></div>';
     }
 
     // Obtém as configurações atuais
-    $current_message = get_option('lgpd_consent_message', 'Este site usa cookies para melhorar sua experiência. Ao continuar navegando, você aceita os termos de privacidade.');
+    $current_message = get_option('lgpd_consent_message', 'This website uses cookies to improve your experience. By continuing to browse, you accept the terms of privacy.');
     $current_privacy_page = get_option('lgpd_privacy_page');
 
     // Formulário de configurações
-    echo '<div class="wrap"><h1>Configurações de Consentimento</h1>';
+    echo '<div class="wrap"><h1>Consent Settings</h1>';
     echo '<form method="post">';
-    echo '<h2>Mensagem de Aceite</h2>';
+    echo '<h2>Message</h2>';
     echo '<textarea name="lgpd_consent_message" rows="5" style="width: 100%;">' . esc_textarea($current_message) . '</textarea>';
     
     // Obtém as páginas publicadas
     $pages = get_pages();
     ?>
 
-    <h2>Selecionar Política de Privacidade</h2>
+    <h2>Select Privacy Policy</h2>
     <select name="lgpd_privacy_page" style="width: 100%;">
-        <option value="">Selecione uma página</option>
+        <option value="">Select a page</option>
         <?php
         // Preenche o select com as páginas disponíveis
         foreach ($pages as $page) {
@@ -252,4 +263,11 @@ function lgpd_display_settings_page() {
     </div>
     <?php
 }
+
+// Registra as configurações
+function lgpd_register_settings() {
+    register_setting('lgpd_settings_group', 'lgpd_consent_message');
+    register_setting('lgpd_settings_group', 'lgpd_privacy_link');
+}
+add_action('admin_init', 'lgpd_register_settings');
 

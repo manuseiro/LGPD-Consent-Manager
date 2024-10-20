@@ -1,0 +1,89 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Engines\n"
+"POT-Creation-Date: 2024-10-20 18:33-0300\n"
+"PO-Revision-Date: 2017-11-30 08:13-0300\n"
+"Last-Translator: \n"
+"Language-Team: SteelThemes\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e;"
+"_n\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: languages\n"
+
+#: lgpd-consent-manager.php:76
+msgid ""
+"This website uses cookies to improve your experience. By continuing to "
+"browse, you accept the terms of privacy."
+msgstr ""
+
+#: lgpd-consent-manager.php:81
+msgid "Read more"
+msgstr ""
+
+#: lgpd-consent-manager.php:82
+msgid "Accept"
+msgstr ""
+
+#: lgpd-consent-manager.php:83
+msgid "Refuse"
+msgstr ""
+
+#: lgpd-consent-manager.php:125 lgpd-consent-manager.php:126
+msgid "Accepts LGPD"
+msgstr ""
+
+#: lgpd-consent-manager.php:137
+msgid "LGPD Settings"
+msgstr ""
+
+#: lgpd-consent-manager.php:138
+msgid "Settings"
+msgstr ""
+
+#: lgpd-consent-manager.php:174
+msgid "LGPD Consent List"
+msgstr ""
+
+#: lgpd-consent-manager.php:179
+msgid "Todos"
+msgstr ""
+
+#: lgpd-consent-manager.php:180
+msgid "Accepted"
+msgstr ""
+
+#: lgpd-consent-manager.php:181
+msgid "Refused"
+msgstr ""
+
+#: lgpd-consent-manager.php:187
+msgid "ID"
+msgstr ""
+
+#: lgpd-consent-manager.php:188
+msgid "User IP"
+msgstr ""
+
+#: lgpd-consent-manager.php:189
+msgid "Action"
+msgstr ""
+
+#: lgpd-consent-manager.php:190
+msgid "Data"
+msgstr ""
+
+#: lgpd-consent-manager.php:191
+msgid "User Agent"
+msgstr ""
+
+#: lgpd-consent-manager.php:222
+msgid "You do not have permission to access this page."
+msgstr ""
