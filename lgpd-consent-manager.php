@@ -3,14 +3,14 @@
  * LGPD Consent Manager
  *
  * Plugin Name: LGPD Consent Manager
- * Plugin URI:        https://github.com/manuseiro/lgpd-consent-manager
+ * Plugin URI: https://github.com/manuseiro/lgpd-consent-manager
  * Description: O LGPD Consent Manager permite gerenciar os consentimentos de cookies e dados pessoais dos visitantes conforme as diretrizes da Lei Geral de Proteção de Dados (LGPD). Exibe uma mensagem solicitando o aceite ou recusa e armazena essas informações no banco de dados, além de fornecer uma interface administrativa para auditoria.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Manuseiro
- * Author URI:        https://github.com/manuseiro
- * Text Domain:       lgpd-consent-manager
- * Domain Path:       /lang
- * Requires PHP:      7.0
+ * Author URI: https://github.com/manuseiro
+ * Text Domain: lgpd-consent-manager
+ * Domain Path: /lang
+ * Requires PHP: 7.0
  * Requires at least: 5.0
  */
 
@@ -96,7 +96,7 @@ function lgpd_consent_scripts() {
                     document.cookie = "lgpd_consent=" + action + "; path=/; expires=365";
                 }
             };
-            xhttp.send("action=lgpd_save_consent&consent_action=" + action);
+            xhttp.send("action=lgpd_save_consent&consent_action=" + action + "&nonce=<?php echo wp_create_nonce('lgpd_nonce'); ?>");
         }
     </script>
     <?php
@@ -105,6 +105,7 @@ add_action('wp_footer', 'lgpd_consent_scripts');
 
 // Manipula a requisição AJAX para salvar o consentimento
 function lgpd_save_consent_ajax() {
+    check_ajax_referer('lgpd_nonce', 'nonce'); // Verifica o nonce
     if (isset($_POST['consent_action'])) {
         $action = sanitize_text_field($_POST['consent_action']);
         lgpd_save_consent($action);
@@ -194,4 +195,10 @@ function lgpd_display_admin_page() {
     echo '</div></div>';
 
     echo '</div>';
+}
+
+// Filtra e armazena apenas os dois primeiros octetos do IP
+function lgpd_sanitize_ip($ip_address) {
+    $parts = explode('.', $ip_address);
+    return isset($parts[0], $parts[1]) ? $parts[0] . '.' . $parts[1] . '.0.0' : '0.0.0.0';
 }
