@@ -5,7 +5,7 @@
  * Plugin Name: LGPD Consent Manager
  * Plugin URI: https://github.com/manuseiro/lgpd-consent-manager
  * Description: O LGPD Consent Manager permite gerenciar os consentimentos de cookies e dados pessoais dos visitantes conforme as diretrizes da Lei Geral de Proteção de Dados (LGPD). Exibe uma mensagem solicitando o aceite ou recusa e armazena essas informações no banco de dados, além de fornecer uma interface administrativa para auditoria.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: Manuseiro
  * Author URI:  https://github.com/manuseiro
  * Text Domain: lgpd-consent-manager
@@ -215,24 +215,41 @@ function lgpd_display_settings_page() {
     // Salva as configurações se o formulário for enviado
     if (isset($_POST['lgpd_update_settings'])) {
         $message = sanitize_textarea_field($_POST['lgpd_consent_message']);
-        $privacy_link = sanitize_text_field($_POST['lgpd_privacy_link']);
+        $privacy_page = intval($_POST['lgpd_privacy_page']);
         update_option('lgpd_consent_message', $message);
-        update_option('lgpd_privacy_link', $privacy_link);
+        update_option('lgpd_privacy_page', $privacy_page); // Armazena o ID da página
         echo '<div class="updated"><p>Configurações atualizadas com sucesso!</p></div>';
     }
 
     // Obtém as configurações atuais
     $current_message = get_option('lgpd_consent_message', 'Este site usa cookies para melhorar sua experiência. Ao continuar navegando, você aceita os termos de privacidade.');
-    $current_privacy_link = get_option('lgpd_privacy_link', '/politica-de-privacidade');
+    $current_privacy_page = get_option('lgpd_privacy_page');
 
     // Formulário de configurações
     echo '<div class="wrap"><h1>Configurações de Consentimento</h1>';
     echo '<form method="post">';
     echo '<h2>Mensagem de Aceite</h2>';
     echo '<textarea name="lgpd_consent_message" rows="5" style="width: 100%;">' . esc_textarea($current_message) . '</textarea>';
-    echo '<h2>Link da Política de Privacidade</h2>';
-    echo '<input type="text" name="lgpd_privacy_link" value="' . esc_attr($current_privacy_link) . '" style="width: 100%;" />';
-    echo '<br><br><input type="submit" name="lgpd_update_settings" class="button button-primary" value="Salvar Configurações" />';
-    echo '</form>';
-    echo '</div>';
+    
+    // Obtém as páginas publicadas
+    $pages = get_pages();
+    ?>
+
+    <h2>Selecionar Política de Privacidade</h2>
+    <select name="lgpd_privacy_page" style="width: 100%;">
+        <option value="">Selecione uma página</option>
+        <?php
+        // Preenche o select com as páginas disponíveis
+        foreach ($pages as $page) {
+            $selected = ($current_privacy_page == $page->ID) ? 'selected' : '';
+            echo '<option value="' . esc_attr($page->ID) . '" ' . $selected . '>' . esc_html($page->post_title) . '</option>';
+        }
+        ?>
+    </select>
+
+    <br><br><input type="submit" name="lgpd_update_settings" class="button button-primary" value="Salvar Configurações" />
+    </form>
+    </div>
+    <?php
 }
+
