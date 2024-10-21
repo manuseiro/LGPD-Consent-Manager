@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Engines\n"
-"POT-Creation-Date: 2024-10-20 18:33-0300\n"
+"POT-Creation-Date: 2024-10-20 21:35-0300\n"
 "PO-Revision-Date: 2017-11-30 08:13-0300\n"
 "Last-Translator: \n"
 "Language-Team: SteelThemes\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e;"
 "_n\n"
@@ -48,42 +48,42 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: lgpd-consent-manager.php:174
+#: lgpd-consent-manager.php:175
 msgid "LGPD Consent List"
 msgstr ""
 
-#: lgpd-consent-manager.php:179
-msgid "Todos"
-msgstr ""
-
 #: lgpd-consent-manager.php:180
-msgid "Accepted"
+msgid "All"
 msgstr ""
 
-#: lgpd-consent-manager.php:181
+#: lgpd-consent-manager.php:182
 msgid "Refused"
 msgstr ""
 
-#: lgpd-consent-manager.php:187
+#: lgpd-consent-manager.php:188
 msgid "ID"
 msgstr ""
 
-#: lgpd-consent-manager.php:188
+#: lgpd-consent-manager.php:189
 msgid "User IP"
 msgstr ""
 
-#: lgpd-consent-manager.php:189
+#: lgpd-consent-manager.php:190
 msgid "Action"
 msgstr ""
 
-#: lgpd-consent-manager.php:190
-msgid "Data"
+#: lgpd-consent-manager.php:191
+msgid "Date"
 msgstr ""
 
-#: lgpd-consent-manager.php:191
+#: lgpd-consent-manager.php:192
 msgid "User Agent"
 msgstr ""
 
-#: lgpd-consent-manager.php:222
+#: lgpd-consent-manager.php:223
 msgid "You do not have permission to access this page."
+msgstr ""
+
+#: lgpd-consent-manager.php:251
+msgid "Select a page"
 msgstr ""

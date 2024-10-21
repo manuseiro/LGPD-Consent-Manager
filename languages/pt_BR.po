@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Engines\n"
-"POT-Creation-Date: 2024-10-20 19:32-0300\n"
-"PO-Revision-Date: 2024-10-20 19:32-0300\n"
+"POT-Creation-Date: 2024-10-20 21:31-0300\n"
+"PO-Revision-Date: 2024-10-20 21:36-0300\n"
 "Last-Translator: \n"
 "Language-Team: SteelThemes\n"
 "Language: pt_BR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e;_n\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -56,10 +56,6 @@ msgstr "Lista de consentimento da LGPD"
 msgid "All"
 msgstr "Todos"
 
-#: lgpd-consent-manager.php:181
-msgid "Accepted"
-msgstr "Aceito"
-
 #: lgpd-consent-manager.php:182
 msgid "Refused"
 msgstr "Recusado"
@@ -87,3 +83,31 @@ msgstr "Navegador"
 #: lgpd-consent-manager.php:223
 msgid "You do not have permission to access this page."
 msgstr "Você não tem permissão para acessar esta página."
+
+#: lgpd-consent-manager.php:232
+msgid "<div class=\"updated\"><p>Settings updated successfully!</p></div>"
+msgstr ""
+"<div class=\"updated\"><p>Configurações atualizadas com sucesso!</p></div>"
+
+#: lgpd-consent-manager.php:240
+msgid "<div class=\"wrap\"><h1>Consent Settings</h1>"
+msgstr "<div class=\"wrap\"><h1>Configurações de consentimento</h1>"
+
+#: lgpd-consent-manager.php:242
+msgid "<h2>Message</h2>"
+msgstr "<h2>Mensagem</h2>"
+
+#: lgpd-consent-manager.php:249
+msgid "Select Privacy Policy"
+msgstr "Selecione a Política de Privacidade"
+
+#: lgpd-consent-manager.php:251
+msgid "Select a page"
+msgstr "Selecione uma pagina"
+
+#: lgpd-consent-manager.php:261
+msgid "Save Settings"
+msgstr "Salvar Configurações"
+
+#~ msgid "Accepted"
+#~ msgstr "Aceito"

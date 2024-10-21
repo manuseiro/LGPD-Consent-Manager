@@ -5,7 +5,7 @@
  * Plugin Name: LGPD Consent Manager
  * Plugin URI: https://github.com/manuseiro/lgpd-consent-manager
  * Description: O LGPD Consent Manager permite gerenciar os consentimentos de cookies e dados pessoais dos visitantes conforme as diretrizes da Lei Geral de Proteção de Dados (LGPD). Exibe uma mensagem solicitando o aceite ou recusa e armazena essas informações no banco de dados, além de fornecer uma interface administrativa para auditoria.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: Manuseiro
  * Author URI:  https://github.com/manuseiro
  * Text Domain: lgpd-consent-manager
@@ -79,8 +79,8 @@ function lgpd_consent_banner() {
     if (!isset($_COOKIE['lgpd_consent'])) {
         echo '<div id="lgpd-consent-banner" style="position: fixed; bottom: 0; background: rgba(0,0,0,0.9); color: #fff; width: 100%; padding: 20px; text-align: center; z-index: 1000;">
                 <p>' . esc_html($message) . ' <a href="' . esc_url($privacy_link) . '" class="btn btn-primary">' . __('Read more', 'lgpd-consent-manager') . '</a></p>
-                <button style="background-color: green; color: white; padding: 10px;" onclick="lgpdConsentAction(\'accepted\')">' . __('Accept', 'lgpd-consent-manager') . '</button>
-                <button style="background-color: red; color: white; padding: 10px;" onclick="lgpdConsentAction(\'rejected\')">' . __('Refuse', 'lgpd-consent-manager') . '</button>
+                <button class="btn btn-dark" onclick="lgpdConsentAction(\'accepted\')">' . __('Accept', 'lgpd-consent-manager') . '</button>
+                <button class="btn btn-danger" onclick="lgpdConsentAction(\'rejected\')">' . __('Refuse', 'lgpd-consent-manager') . '</button>
               </div>';
     }
 }
@@ -178,9 +178,9 @@ function lgpd_display_admin_page() {
     echo '<form method="get"><input type="hidden" name="page" value="lgpd-consent-manager"/>';
     echo '<select name="action_filter" onchange="this.form.submit()">';
     echo '<option value="">' . __('All', 'lgpd-consent-manager') . '</option>';
-    echo '<option value="accepted" ' . selected($action_filter, 'accepted', false) . '>' . _X('Accepted', 'lgpd-consent-manager') . '</option>';
+    echo '<option value="accepted" ' . selected($action_filter, 'accepted', false) . '>' . __('Accepted', 'lgpd-consent-manager') . '</option>';
     echo '<option value="rejected" ' . selected($action_filter, 'rejected', false) . '>' . __('Refused', 'lgpd-consent-manager') . '</option>';
-    echo '</select></form>';
+    echo '</select></form><br>';
 
     // Tabela de consentimentos com links para ordenação
     echo '<table class="wp-list-table widefat fixed striped">';
@@ -229,7 +229,7 @@ function lgpd_display_settings_page() {
         $privacy_page = intval($_POST['lgpd_privacy_page']);
         update_option('lgpd_consent_message', $message);
         update_option('lgpd_privacy_page', $privacy_page); // Armazena o ID da página
-        echo '<div class="updated"><p>Settings updated successfully!</p></div>';
+        echo __('<div class="updated"><p>Settings updated successfully!</p></div>', 'lgpd-consent-manager');
     }
 
     // Obtém as configurações atuais
@@ -237,18 +237,18 @@ function lgpd_display_settings_page() {
     $current_privacy_page = get_option('lgpd_privacy_page');
 
     // Formulário de configurações
-    echo '<div class="wrap"><h1>Consent Settings</h1>';
+    echo __('<div class="wrap"><h1>Consent Settings</h1>', 'lgpd-consent-manager');
     echo '<form method="post">';
-    echo '<h2>Message</h2>';
+    echo __('<h2>Message</h2>', 'lgpd-consent-manager');
     echo '<textarea name="lgpd_consent_message" rows="5" style="width: 100%;">' . esc_textarea($current_message) . '</textarea>';
     
     // Obtém as páginas publicadas
     $pages = get_pages();
     ?>
 
-    <h2>Select Privacy Policy</h2>
+<h2><?php echo  __('Select Privacy Policy', 'lgpd-consent-manager')?></h2>
     <select name="lgpd_privacy_page" style="width: 100%;">
-        <option value="">Select a page</option>
+        <option value=""><?php echo  __('Select a page', 'lgpd-consent-manager')?></option>
         <?php
         // Preenche o select com as páginas disponíveis
         foreach ($pages as $page) {
@@ -258,7 +258,7 @@ function lgpd_display_settings_page() {
         ?>
     </select>
 
-    <br><br><input type="submit" name="lgpd_update_settings" class="button button-primary" value="Salvar Configurações" />
+    <br><br><input type="submit" name="lgpd_update_settings" class="button button-primary" value="<?php echo __('Save Settings', 'lgpd-consent-manager')?>" />
     </form>
     </div>
     <?php
